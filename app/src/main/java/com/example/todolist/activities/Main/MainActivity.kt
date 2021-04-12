@@ -13,6 +13,7 @@ import com.example.todolist.models.Task
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_main.*
+import timber.log.Timber
 
 class MainActivity : AppCompatActivity() {
 
@@ -20,6 +21,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        Timber.i(getString(R.string.timber_MainActivity_onCreate_called))
         setContentView(R.layout.activity_main)
         recyclerView_Main.layoutManager = LinearLayoutManager(this)
 
@@ -33,18 +35,21 @@ class MainActivity : AppCompatActivity() {
     }
 
     override fun onResume() {
+        Timber.i(getString(R.string.timber_MainActivity_onResume_called))
         super.onResume()
         loadTasksFromSharedPrefs()
     }
 
     private fun initializeSharedPrefs() {
+        Timber.i(getString(R.string.timber_initializeSharedPrefs_called))
+
         tasks = loadTasksFromSharedPrefs()
 
         val gson = Gson()
-        val prefs = getSharedPreferences("com.example.todolist",
+        val prefs = getSharedPreferences(getString(R.string.package_name),
                 Context.MODE_PRIVATE)
 
-        if (tasks.size == 0) { // check if tasks exist in sharedprefs
+        if (tasks.size == 0) { // check if tasks exist in shared prefs
             tasks = ArrayList<Task>()
 //            val currentDate = LocalDate.now().toString()
             // fill tasks with example tasks
@@ -55,24 +60,26 @@ class MainActivity : AppCompatActivity() {
         }
         val editor = prefs.edit()
         val json = gson.toJson(tasks)
-        editor.putString("tasks", json)
+        editor.putString(getString(R.string.json_tasks_tag), json)
         editor.apply()
     }
 
     private fun loadTasksFromSharedPrefs(): ArrayList<Task> {
+        Timber.i(getString(R.string.timber_load_tasks_called))
         val gson = Gson()
-        val prefs = getSharedPreferences("com.example.todolist",
+        val prefs = getSharedPreferences(getString(R.string.package_name),
                 Context.MODE_PRIVATE)
-        if (prefs.contains("tasks")) {
-            val json = prefs.getString("tasks", null)
+        if (prefs.contains(getString(R.string.json_tasks_tag))) {
+            val json = prefs.getString(getString(R.string.json_tasks_tag), null)
             val type = object : TypeToken<ArrayList<Task>>() {}.type
             tasks = gson.fromJson(json, type)
+            Timber.i(getString(R.string.timber_tasks_loaded_from_shared_prefs))
             var adapter = MainAdapter(tasks)
             recyclerView_Main.adapter = adapter
+
         }
         return tasks
     }
-
 
 
 }

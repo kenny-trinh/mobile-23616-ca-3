@@ -35,39 +35,35 @@ class CreateItemActivity : AppCompatActivity() {
             }
         }
 
-
     }
 
     private fun createTask() {
         val taskName = editText_create_task_name.text.toString()
         if (taskName.isNotEmpty()) {
             val gson = Gson()
-            val prefs = getSharedPreferences("com.example.todolist",
+            val prefs = getSharedPreferences(getString(R.string.package_name),
                     Context.MODE_PRIVATE)
             currentTasks = getTasks()
             currentTasks.add(Task(taskName))
             val editor = prefs.edit()
             val json = gson.toJson(currentTasks)
-            editor.putString("tasks", json)
+            editor.putString(getString(R.string.json_tasks_tag), json)
             editor.apply()
             finish()
         }
-
         if (taskName.isEmpty()) {
-            Toast.makeText(this, "Task name field is empty.", Toast.LENGTH_SHORT).show()
-
+            Toast.makeText(this, getString(R.string.toast_task_name_field_empty), Toast.LENGTH_SHORT).show()
         }
 
     }
 
     private fun getTasks(): ArrayList<Task> {
         val gson = Gson()
-        val prefs = getSharedPreferences("com.example.todolist",
+        val prefs = getSharedPreferences(getString(R.string.package_name),
                 Context.MODE_PRIVATE)
         var tasks = ArrayList<Task>()
-
-        if (prefs.contains("tasks")) {
-            val json = prefs.getString("tasks", null)
+        if (prefs.contains(getString(R.string.json_tasks_tag))) {
+            val json = prefs.getString(getString(R.string.json_tasks_tag), null)
             val type = object : TypeToken<ArrayList<Task>>() {}.type
             tasks = gson.fromJson(json, type)
         }

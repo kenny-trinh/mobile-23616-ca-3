@@ -25,8 +25,6 @@ class MainAdapter(val tasks: ArrayList<Task>) : RecyclerView.Adapter<MainViewHol
     override fun onBindViewHolder(holder: MainViewHolder, position: Int) {
         val task = tasks[position]
         holder.itemView.textView_task_name?.text = task.name
-//        holder.itemView.textView_due_date.text = "Due date: " + task.dueDate
-
         holder.task = task
         holder.id = position
     }
